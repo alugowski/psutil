@@ -26,7 +26,7 @@ jobs:
       matrix:
         include:
         - os: ubuntu-latest
-          archs: "x86_64 i686"
+          archs: "x86_64 i686 aarch64"
         - os: macos-12
           archs: "x86_64"
         - os: macos-14
@@ -40,6 +40,13 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: 3.11
+
+    - name: Setup QEMU
+      # for building non-x86 Linux wheels on x86 runner
+      if: runner.os == 'Linux'
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: all
 
     - name: Create wheels + run tests
       uses: pypa/cibuildwheel@v2.17.0
